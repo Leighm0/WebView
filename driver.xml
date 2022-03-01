@@ -1,0 +1,152 @@
+<devicedata>
+	<copyright>Copyright 2022 Welton Cartel. All rights reserved.</copyright>
+	<creator>Welton Cartel</creator>
+	<manufacturer>Control4</manufacturer>
+	<name>WebView</name>
+	<model>Touchscreens / Mobile App</model>
+	<created>09/07/2021 12:00:00 AM</created>
+	<modified>01/03/2022 12:00:00 AM</modified>
+	<version>3</version>
+	<control>lua_gen</control>
+	<driver>DriverWorks</driver>
+	<minimum_os_version>3.0.0</minimum_os_version>
+	<small image_source="c4z">icons/device_sm.png</small>
+	<large image_source="c4z">icons/device_lg.png</large>
+	<proxies qty="1">
+		<proxy proxybindingid="5001" name="WebView" image_source="c4z" small_image="icons/device_sm.png" large_image="icons/device_lg.png">uibutton</proxy>
+	</proxies>
+	<config>
+		<script file="driver.lua" />
+		<documentation file="www/documentation/index.html" />
+		<commands>
+			<command>
+				<name>Set URL</name>
+				<description>Set the URL on NAME to PARAM1</description>
+				<params>
+					<param>
+						<name>URL</name>
+						<type>STRING</type>
+					</param>
+				</params>
+			</command>
+			<command>
+				<name>Set Preset</name>
+				<description>Set the Preset on NAME to PARAM1</description>
+				<params>
+					<param>
+						<name>PRESET</name>
+						<type>LIST</type>
+						<items>
+							<item>None</item>
+							<item>Google</item>
+							<item>Google Calendar</item>
+							<item>Google News</item>
+							<item>Weather.com</item>
+						</items>
+					</param>
+				</params>
+			</command>
+		</commands>
+		<properties>
+			<property>
+				<name>Driver Information</name>
+				<type>LABEL</type>
+				<default>Driver Information</default>
+			</property>
+			<property>
+				<name>Driver Name</name>
+				<default/>
+				<type>STRING</type>
+				<readonly>true</readonly>
+			</property>
+			<property>
+				<name>Driver Version</name>
+				<default/>
+				<type>STRING</type>
+				<readonly>true</readonly>
+			</property>
+			<property>
+				<name>Debug Mode</name>
+				<type>LIST</type>
+				<items>
+					<item>Off</item>
+					<item>On</item>
+				</items>
+				<default>Off</default>
+				<readonly>false</readonly>
+			</property>
+			<property>
+				<name>URL</name>
+				<default/>
+				<type>STRING</type>
+				<readonly>false</readonly>
+			</property>
+			<property>
+				<name>Presets</name>
+				<type>LIST</type>
+				<items>
+					<item>None</item>
+					<item>Google</item>
+					<item>Google Calendar</item>
+					<item>Google News</item>
+					<item>Weather.com</item>
+				</items>
+				<default>None</default>
+				<readonly>false</readonly>
+			</property>
+		</properties>
+	</config>
+	<capabilities>
+		<web_view_url proxybindingid="5001">https://google.com</web_view_url>
+		<mobile_web_view_enabled>true</mobile_web_view_enabled>
+		<navigator_display_option proxybindingid="5001">
+			<Icon height="70" width="70">controller://driver/webview/icons/device/url_70.png</Icon>
+			<Icon height="90" width="90">controller://driver/webview/icons/device/url_90.png</Icon>
+			<Icon height="300" width="300">controller://driver/webview/icons/device/url_300.png</Icon>
+			<display_icons>
+				<state id="default">
+					<Icon height="70" width="70">controller://driver/webview/icons/device/url_70.png</Icon>
+					<Icon height="90" width="90">controller://driver/webview/icons/device/url_90.png</Icon>
+					<Icon height="300" width="300">controller://driver/webview/icons/device/url_300.png</Icon>
+				</state>
+				<state id="google">
+					<Icon height="70" width="70">controller://driver/webview/icons/device/google_70.png</Icon>
+					<Icon height="90" width="90">controller://driver/webview/icons/device/google_90.png</Icon>
+					<Icon height="300" width="300">controller://driver/webview/icons/device/google_300.png</Icon>
+				</state>
+				<state id="calendar">
+					<Icon height="70" width="70">controller://driver/webview/icons/device/google_calendar_70.png</Icon>
+					<Icon height="90" width="90">controller://driver/webview/icons/device/google_calendar_90.png</Icon>
+					<Icon height="300" width="300">controller://driver/webview/icons/device/google_calendar_300.png</Icon>
+				</state>
+				<state id="news">
+					<Icon height="70" width="70">controller://driver/webview/icons/device/google_news_70.png</Icon>
+					<Icon height="90" width="90">controller://driver/webview/icons/device/google_news_90.png</Icon>
+					<Icon height="300" width="300">controller://driver/webview/icons/device/google_news_300.png</Icon>
+				</state>
+				<state id="weather">
+					<Icon height="70" width="70">controller://driver/webview/icons/device/weather_70.png</Icon>
+					<Icon height="90" width="90">controller://driver/webview/icons/device/weather_90.png</Icon>
+					<Icon height="300" width="300">controller://driver/webview/icons/device/weather_300.png</Icon>
+				</state>
+			</display_icons>
+		</navigator_display_option>
+	</capabilities>
+	<connections>
+		<connection>
+			<id>5001</id>
+			<facing>6</facing>
+			<connectionname>UIBUTTON</connectionname>
+			<type>2</type>
+			<consumer>False</consumer>
+			<audiosource>False</audiosource>
+			<videosource>False</videosource>
+			<linelevel>False</linelevel>
+			<classes>
+				<class>
+					<classname>UIBUTTON</classname>
+				</class>
+			</classes>
+		</connection>
+	</connections>
+</devicedata>
