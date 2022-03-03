@@ -139,7 +139,7 @@ end
 function OnPropertyChanged (strProperty)
 	Dbg("OnPropertyChanged: " .. strProperty .. " (" .. Properties[strProperty] .. ")")
 	local propertyValue = Properties[strProperty]
-	if (propertyValue == nil) then properyValue = '' end
+	if (propertyValue == nil) then propertyValue = '' end
 	local strProperty = string.upper(strProperty)
 	strProperty = string.gsub(strProperty, "%s+", "_")
 	local success, ret
