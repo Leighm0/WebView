@@ -6,47 +6,19 @@
 	<model>Touchscreens / Mobile App</model>
 	<created>09/07/2021 12:00:00 AM</created>
 	<modified>16/03/2022 12:00:00 AM</modified>
-	<version>4</version>
+	<version>5</version>
 	<control>lua_gen</control>
 	<driver>DriverWorks</driver>
 	<minimum_os_version>3.0.0</minimum_os_version>
 	<small image_source="c4z">icons/device_sm.png</small>
 	<large image_source="c4z">icons/device_lg.png</large>
-	<proxies qty="1">
+	<proxies>
 		<proxy proxybindingid="5001" name="WebView" image_source="c4z" small_image="icons/device_sm.png" large_image="icons/device_lg.png">uibutton</proxy>
 	</proxies>
+	<events/>
 	<config>
-		<script file="driver.lua" />
-		<documentation file="www/documentation/index.html" />
-		<commands>
-			<command>
-				<name>Set URL</name>
-				<description>Set the URL on NAME to PARAM1</description>
-				<params>
-					<param>
-						<name>URL</name>
-						<type>STRING</type>
-					</param>
-				</params>
-			</command>
-			<command>
-				<name>Set Preset</name>
-				<description>Set the Preset on NAME to PARAM1</description>
-				<params>
-					<param>
-						<name>PRESET</name>
-						<type>LIST</type>
-						<items>
-							<item>None</item>
-							<item>Google</item>
-							<item>Google Calendar</item>
-							<item>Google News</item>
-							<item>Weather.com</item>
-						</items>
-					</param>
-				</params>
-			</command>
-		</commands>
+		<script file="driver.lua"/>
+		<documentation file="www/documentation/index.html"/>
 		<properties>
 			<property>
 				<name>Driver Information</name>
@@ -95,6 +67,36 @@
 				<readonly>false</readonly>
 			</property>
 		</properties>
+		<actions/>
+		<commands>
+			<command>
+				<name>Set URL</name>
+				<description>Set the URL on NAME to PARAM1</description>
+				<params>
+					<param>
+						<name>URL</name>
+						<type>STRING</type>
+					</param>
+				</params>
+			</command>
+			<command>
+				<name>Set Preset</name>
+				<description>Set the Preset on NAME to PARAM1</description>
+				<params>
+					<param>
+						<name>PRESET</name>
+						<type>LIST</type>
+						<items>
+							<item>None</item>
+							<item>Google</item>
+							<item>Google Calendar</item>
+							<item>Google News</item>
+							<item>Weather.com</item>
+						</items>
+					</param>
+				</params>
+			</command>
+		</commands>
 	</config>
 	<capabilities>
 		<web_view_url proxybindingid="5001">https://google.com</web_view_url>

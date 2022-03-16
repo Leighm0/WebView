@@ -1,6 +1,6 @@
----------------
--- Globals
----------------
+-------------
+-- Globals --
+-------------
 do
 	EC = {}
 	OPC = {}
@@ -28,54 +28,94 @@ do
 	}
 end
 
-----------------------------------------------------------------------------------------------
---Function Name : setPresetIcon
---Parameters    : strPreset(string)
---Description   : Function called to set the Icon for the UI button based on Preset Selection.
-----------------------------------------------------------------------------------------------
-function setPresetIcon(strPreset)
-	if (strPreset ~= "None") then
-		local strIcon = PRESETS[strPreset]["icon"]
-		C4:SendToProxy(5001, "ICON_CHANGED", {icon = strIcon})
-	else
-		local strIcon = PRESETS[strPreset]["icon"]
-		C4:SendToProxy(5001, "ICON_CHANGED", {icon = strIcon})
+----------------------------------------------------------------------------
+--Function Name : OnDriverInit
+--Description   : Function invoked when a driver is loaded or being updated.
+----------------------------------------------------------------------------
+function OnDriverInit()
+	C4:UpdateProperty("Driver Name", C4:GetDriverConfigInfo("name"))
+	C4:UpdateProperty("Driver Version", C4:GetDriverConfigInfo("version"))
+	C4:AllowExecute(true)
+end
+
+------------------------------------------------------------------------------------------------
+--Function Name : OnDriverLateInit
+--Description   : Function that serves as a callback into a project after the project is loaded.
+------------------------------------------------------------------------------------------------
+function OnDriverLateInit()
+	for k,v in pairs(Properties) do OnPropertyChanged(k) end
+	C4:SetTimer(3000, function(timer) 
+		C4:SendToProxy(5001, "URL_CHANGED", {url = Properties["URL"]})
+		setPresetIcon(Properties["Presets"])
+		setPresetName(Properties["Presets"])
+	end)
+end
+
+-----------------------------------------------------------------------------------------------------------------------------
+--Function Name : OnDriverDestroyed
+--Description   : Function called when a driver is deleted from a project, updated within a project or Director is shut down.
+-----------------------------------------------------------------------------------------------------------------------------
+function OnDriverDestroyed()
+	gDbgPrint = C4:KillTimer(gDbgPrint or 0)
+end
+
+----------------------------------------------------------------------------
+--Function Name : OnPropertyChanged
+--Parameters    : strProperty(str)
+--Description   : Function called by Director when a property changes value.
+----------------------------------------------------------------------------
+function OnPropertyChanged(strProperty)
+	Dbg("OnPropertyChanged: " .. strProperty .. " (" .. Properties[strProperty] .. ")")
+	local propertyValue = Properties[strProperty]
+	if (propertyValue == nil) then propertyValue = '' end
+	local strProperty = string.upper(strProperty)
+	strProperty = string.gsub(strProperty, "%s+", "_")
+	local success, ret
+	if (OPC and OPC[strProperty] and type(OPC[strProperty]) == "function") then
+		success, ret = pcall(OPC[strProperty], propertyValue)
+	end
+	if (success == true) then
+		return (ret)
+	elseif (success == false) then
+		print ("OnPropertyChanged Lua error: ", strProperty, ret)
 	end
 end
 
----------------------------------------------------------------------------------------------
---Function Name : setPresetURL
---Parameters    : strPreset(string)
---Description   : Function called to set the URL for the UI button based on Preset Selection.
----------------------------------------------------------------------------------------------
-function setPresetURL(strPreset)
-	if (strPreset ~= "None") then
-		local newUrl = PRESETS[strPreset]["url"]
-		C4:SendToProxy(5001, "URL_CHANGED", {url = newUrl})
-		C4:UpdateProperty("URL", newUrl)
-	else
-		local newUrl = PRESETS[strPreset]["url"]
-		C4:SendToProxy(5001, "URL_CHANGED", {url = newUrl})
-		C4:UpdateProperty("URL", newUrl)
-	end
+-------------------------------------------------------------------------
+--Function Name : OPC.DEBUG_MODE
+--Parameters    : strProperty(str)
+--Description   : Function called when Debug Mode property changes value.
+-------------------------------------------------------------------------
+function OPC.DEBUG_MODE(strProperty)
+	gDbgPrint = C4:KillTimer(gDbgPrint or 0)
+	if (strProperty == "Off") then return end
+	gDbgPrint = C4:AddTimer(8, "HOURS")
+	print ("Enabled Debug Timer for 8 hours")
 end
 
--------------------------------------------------------------------------------------------
---Function Name : setPresetURL
---Parameters    : strPreset(string)
---Description   : Function called to set the Name for the Driver based on Preset Selection.
--------------------------------------------------------------------------------------------
-function setPresetName(strPreset)
-	if (strPreset ~= "None") then
-		local newName = strPreset
-		local proxyId = C4:GetProxyDevices()
-		C4:RenameDevice(proxyId, newName)
-	end
+------------------------------------------------------------------
+--Function Name : OPC.URL
+--Parameters    : strProperty(str)
+--Description   : Function called when URL property changes value.
+------------------------------------------------------------------
+function OPC.URL(strProperty)
+	C4:SendToProxy(5001, "URL_CHANGED", {url = strProperty})
+end
+
+----------------------------------------------------------------------
+--Function Name : OPC.PRESETS
+--Parameters    : strProperty(str)
+--Description   : Function called when Presets property changes value.
+----------------------------------------------------------------------
+function OPC.PRESETS(strProperty)
+	setPresetIcon(strProperty)
+	setPresetURL(strProperty)
+	setPresetName(strProperty)
 end
 
 -----------------------------------------------------------------------------------------------------
 --Function Name : ExecuteCommand
---Parameters    : strCommand(string), tParams(table)
+--Parameters    : strCommand(str), tParams(table)
 --Description   : Function called by Director when a command is received for this DriverWorks driver.
 -----------------------------------------------------------------------------------------------------
 function ExecuteCommand(strCommand, tParams)
@@ -127,64 +167,55 @@ function EC.SET_PRESET(tParams)
 		setPresetName(Properties[strPreset])
 	end
 end
- 
-----------------------------------------------------------------------------
---Function Name : OnPropertyChanged(strProperty)
---Parameters    : strProperty(string)
---Description   : Function called by Director when a property changes value.
-----------------------------------------------------------------------------
-function OnPropertyChanged (strProperty)
-	Dbg("OnPropertyChanged: " .. strProperty .. " (" .. Properties[strProperty] .. ")")
-	local propertyValue = Properties[strProperty]
-	if (propertyValue == nil) then propertyValue = '' end
-	local strProperty = string.upper(strProperty)
-	strProperty = string.gsub(strProperty, "%s+", "_")
-	local success, ret
-	if (OPC and OPC[strProperty] and type(OPC[strProperty]) == "function") then
-		success, ret = pcall(OPC[strProperty], propertyValue)
-	end
-	if (success == true) then
-		return (ret)
-	elseif (success == false) then
-		print ("OnPropertyChanged Lua error: ", strProperty, ret)
+
+----------------------------------------------------------------------------------------------
+--Function Name : setPresetIcon
+--Parameters    : strPreset(str)
+--Description   : Function called to set the Icon for the UI button based on Preset Selection.
+----------------------------------------------------------------------------------------------
+function setPresetIcon(strPreset)
+	if (strPreset ~= "None") then
+		local strIcon = PRESETS[strPreset]["icon"]
+		C4:SendToProxy(5001, "ICON_CHANGED", {icon = strIcon})
+	else
+		local strIcon = PRESETS[strPreset]["icon"]
+		C4:SendToProxy(5001, "ICON_CHANGED", {icon = strIcon})
 	end
 end
 
--------------------------------------------------------------------------
---Function Name : OPC.DEBUG_MODE(strProperty)
---Parameters    : strProperty(string)
---Description   : Function called when Debug Mode property changes value.
--------------------------------------------------------------------------
-function OPC.DEBUG_MODE(strProperty)
-	gDbgPrint = C4:KillTimer(gDbgPrint or 0)
-	if (strProperty == "Off") then return end
-	gDbgPrint = C4:AddTimer(8, "HOURS")
-	print ("Enabled Debug Timer for 8 hours")
+---------------------------------------------------------------------------------------------
+--Function Name : setPresetURL
+--Parameters    : strPreset(str)
+--Description   : Function called to set the URL for the UI button based on Preset Selection.
+---------------------------------------------------------------------------------------------
+function setPresetURL(strPreset)
+	if (strPreset ~= "None") then
+		local newUrl = PRESETS[strPreset]["url"]
+		C4:SendToProxy(5001, "URL_CHANGED", {url = newUrl})
+		C4:UpdateProperty("URL", newUrl)
+	else
+		local newUrl = PRESETS[strPreset]["url"]
+		C4:SendToProxy(5001, "URL_CHANGED", {url = newUrl})
+		C4:UpdateProperty("URL", newUrl)
+	end
 end
 
-------------------------------------------------------------------
---Function Name : OPC.URL(strProperty)
---Parameters    : strProperty(string)
---Description   : Function called when URL property changes value.
-------------------------------------------------------------------
-function OPC.URL(strProperty)
-	C4:SendToProxy(5001, "URL_CHANGED", {url = strProperty})
-end
-
-----------------------------------------------------------------------
---Function Name : OPC.PRESETS(strProperty)
---Parameters    : strProperty(string)
---Description   : Function called when Presets property changes value.
-----------------------------------------------------------------------
-function OPC.PRESETS(strProperty)
-	setPresetIcon(strProperty)
-	setPresetURL(strProperty)
-	setPresetName(strProperty)
+-------------------------------------------------------------------------------------------
+--Function Name : setPresetURL
+--Parameters    : strPreset(str)
+--Description   : Function called to set the Name for the Driver based on Preset Selection.
+-------------------------------------------------------------------------------------------
+function setPresetName(strPreset)
+	if (strPreset ~= "None") then
+		local newName = strPreset
+		local proxyId = C4:GetProxyDevices()
+		C4:RenameDevice(proxyId, newName)
+	end
 end
 
 ---------------------------------------------------------------------------------------------
 --Function Name : Dbg
---Parameters    : strDebugText(string)
+--Parameters    : strDebugText(str)
 --Description   : Function called when debug information is to be printed/logged (if enabled)
 ---------------------------------------------------------------------------------------------
 function Dbg(strDebugText)
@@ -208,37 +239,3 @@ function formatParams(tParams)
 	end
 	return "{" .. table.concat(out, ", ") .. "}"
 end
-
------------------------------------------------------------------------------------------------------------------------------
---Function Name : OnDriverDestroyed
---Description   : Function called when a driver is deleted from a project, updated within a project or Director is shut down.
------------------------------------------------------------------------------------------------------------------------------
-function OnDriverDestroyed()
-	gDbgPrint = C4:KillTimer(gDbgPrint or 0)
-end
-
-----------------------------------------------------------------------------
---Function Name : OnDriverInit
---Description   : Function invoked when a driver is loaded or being updated.
-----------------------------------------------------------------------------
-function OnDriverInit()
-	C4:AllowExecute(true)
-end
-
-------------------------------------------------------------------------------------------------
---Function Name : OnDriverLateInit
---Description   : Function that serves as a callback into a project after the project is loaded.
-------------------------------------------------------------------------------------------------
-function OnDriverLateInit()
-	DRIVER_NAME = C4:GetDriverConfigInfo("name")
-	DRIVER_VERSION = C4:GetDriverConfigInfo("version")
-	C4:UpdateProperty("Driver Name", DRIVER_NAME)
-	C4:UpdateProperty("Driver Version", DRIVER_VERSION)
-	C4:SetTimer(3000, function(timer) 
-		C4:SendToProxy(5001, "URL_CHANGED", {url = Properties["URL"]})
-		setPresetIcon(Properties["Presets"])
-		setPresetName(Properties["Presets"])
-	end)
-end
-
-print("Driver Loaded..." .. os.date())
