@@ -1,4 +1,4 @@
-![icon](https://user-images.githubusercontent.com/69341431/158505941-a89be92a-f7a9-4ce0-9598-d3e85f4e7c6c.png)
+![WebView](https://user-images.githubusercontent.com/69341431/158507188-a1bee639-ee9e-4ff9-8e18-40bb07103588.png)
 
 # Control4 WebView
 
