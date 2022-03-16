@@ -70,9 +70,6 @@ function setPresetName(strPreset)
 		local newName = strPreset
 		local proxyId = C4:GetProxyDevices()
 		C4:RenameDevice(proxyId, newName)
-	else
-		local proxyId = C4:GetProxyDevices()
-		C4:RenameDevice(proxyId, C4:GetDriverConfigInfo("name"))
 	end
 end
 
