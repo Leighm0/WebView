@@ -1,3 +1,5 @@
+![icon](https://user-images.githubusercontent.com/69341431/158505941-a89be92a-f7a9-4ce0-9598-d3e85f4e7c6c.png)
+
 # Control4 WebView
 
 Control4 Driver for loading a Website using the WebView Proxy available on a Touchscreen/Mobile Device.
