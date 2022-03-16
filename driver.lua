@@ -26,6 +26,8 @@ do
 			icon = "weather"
 		}
 	}
+	g_debugMode = 0
+	g_DbgPrint = nil
 end
 
 ----------------------------------------------------------------------------
@@ -56,7 +58,7 @@ end
 --Description   : Function called when a driver is deleted from a project, updated within a project or Director is shut down.
 -----------------------------------------------------------------------------------------------------------------------------
 function OnDriverDestroyed()
-	gDbgPrint = C4:KillTimer(gDbgPrint or 0)
+	if (g_DbgPrint ~= nil) then g_DbgPrint:Cancel() end
 end
 
 ----------------------------------------------------------------------------
@@ -87,10 +89,18 @@ end
 --Description   : Function called when Debug Mode property changes value.
 -------------------------------------------------------------------------
 function OPC.DEBUG_MODE(strProperty)
-	gDbgPrint = C4:KillTimer(gDbgPrint or 0)
-	if (strProperty == "Off") then return end
-	gDbgPrint = C4:AddTimer(8, "HOURS")
-	print ("Enabled Debug Timer for 8 hours")
+	if (strProperty == "Off") then
+		if (g_DbgPrint ~= nil) then g_DbgPrint:Cancel() end
+		g_debugMode = 0
+		print ("Debug Mode: Off")
+	else
+		g_debugMode = 1
+		print ("Debug Mode: On for 8 hours")
+		g_DbgPrint = C4:SetTimer(28800000, function(timer)
+			C4:UpdateProperty("Debug Mode", "Off")
+			timer:Cancel()
+		end, false)
+	end
 end
 
 ------------------------------------------------------------------
@@ -219,7 +229,7 @@ end
 --Description   : Function called when debug information is to be printed/logged (if enabled)
 ---------------------------------------------------------------------------------------------
 function Dbg(strDebugText)
-	if (gDbgPrint) then print(strDebugText)	end
+    if (g_debugMode == 1) then print(strDebugText) end
 end
 
 ---------------------------------------------------------
