@@ -22,3 +22,4 @@ Optional:
 - Version 2: Added support for Mobile WebView (Control4 App on Phones/Tablets)
 - Version 3: Code clean up and Documentation update
 - Version 4: Remove driver rename for None preset bug
+- Version 5: New Icon for Driver and LUA/XML cleanup
