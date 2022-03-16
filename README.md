@@ -23,3 +23,4 @@ Optional:
 - Version 3: Code clean up and Documentation update
 - Version 4: Remove driver rename for None preset bug
 - Version 5: New Icon for Driver and LUA/XML cleanup
+- Version 6: Debug functions revamped
