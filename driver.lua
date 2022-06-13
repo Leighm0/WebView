@@ -28,6 +28,8 @@ do
 	}
 	g_debugMode = 0
 	g_DbgPrint = nil
+	g_AutoRename = false
+	g_lastName = "WebView"
 end
 
 ----------------------------------------------------------------------------
@@ -46,10 +48,13 @@ end
 ------------------------------------------------------------------------------------------------
 function OnDriverLateInit()
 	for k,v in pairs(Properties) do OnPropertyChanged(k) end
+	PersistData = PersistData or {}
+	--if (PersistData.PRESET ~= nil) then C4:UpdateProperty("Presets", PersistData.PRESET) end
+	if (PersistData.URL ~= nil) then C4:UpdateProperty("URL", PersistData.URL) end
 	C4:SetTimer(3000, function(timer) 
 		C4:SendToProxy(5001, "URL_CHANGED", {url = Properties["URL"]})
 		setPresetIcon(Properties["Presets"])
-		setPresetName(Properties["Presets"])
+		if (g_AutoRename) then setPresetName(Properties["Presets"]) end
 	end)
 end
 
@@ -110,6 +115,7 @@ end
 ------------------------------------------------------------------
 function OPC.URL(strProperty)
 	C4:SendToProxy(5001, "URL_CHANGED", {url = strProperty})
+	PersistData.URL = strProperty
 end
 
 ----------------------------------------------------------------------
@@ -120,7 +126,22 @@ end
 function OPC.PRESETS(strProperty)
 	setPresetIcon(strProperty)
 	setPresetURL(strProperty)
-	setPresetName(strProperty)
+	if (g_AutoRename) then setPresetName(Properties["Presets"]) end
+	--PersistData.PRESET = strProperty
+end
+
+---------------------------------------------------------------------------------
+--Function Name : OPC.AUTO_RENAME_DRIVER
+--Parameters    : strProperty(str)
+--Description   : Function called when Auto Rename Driver property changes value.
+---------------------------------------------------------------------------------
+function OPC.AUTO_RENAME_DRIVER(strProperty)
+	if (strProperty == "On") then
+		g_AutoRename = true
+		setPresetName(Properties["Presets"])
+	else
+		g_AutoRename = false
+	end
 end
 
 -----------------------------------------------------------------------------------------------------
@@ -174,7 +195,7 @@ function EC.SET_PRESET(tParams)
 		local strPreset = tParams.PRESET
 		setPresetIcon(Properties[strPreset])
 		setPresetURL(Properties[strPreset])
-		setPresetName(Properties[strPreset])
+		if (g_AutoRename) then setPresetName(Properties["Presets"]) end
 	end
 end
 
@@ -216,10 +237,26 @@ end
 --Description   : Function called to set the Name for the Driver based on Preset Selection.
 -------------------------------------------------------------------------------------------
 function setPresetName(strPreset)
+	if (g_AutoRename == false) then return end
+	local lastName = g_lastName or "WebView"
+	local newName = strPreset
+	local proxyId = C4:GetProxyDevices()
 	if (strPreset ~= "None") then
-		local newName = strPreset
-		local proxyId = C4:GetProxyDevices()
-		C4:RenameDevice(proxyId, newName)
+		if (newName ~= lastName) then
+			Dbg("Current Driver Name: " .. lastName .. " | Renaming to: " ..newName)
+			C4:RenameDevice(proxyId, newName)
+			g_lastName = newName
+		else
+			Dbg("Not renaming device, already same name: "  .. newName)
+		end
+	else
+		if (newName ~= lastName) then
+			Dbg("Current Driver Name: " .. lastName .. " | Renaming to: WebView")
+			C4:RenameDevice(proxyId,  "WebView")
+			g_lastName = "WebView"
+		else
+			Dbg("Not renaming device, already same name: WebView")
+		end
 	end
 end
 

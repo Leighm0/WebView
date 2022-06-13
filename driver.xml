@@ -4,9 +4,9 @@
 	<manufacturer>Control4</manufacturer>
 	<name>WebView</name>
 	<model>Touchscreens / Mobile App</model>
-	<created>09/07/2021 12:00:00 AM</created>
-	<modified>16/03/2022 12:00:00 AM</modified>
-	<version>6</version>
+	<created>07/09/2021 12:00:00 AM</created>
+	<modified>06/13/2022 12:00:00 AM</modified>
+	<version>7</version>
 	<control>lua_gen</control>
 	<driver>DriverWorks</driver>
 	<minimum_os_version>3.0.0</minimum_os_version>
@@ -64,6 +64,16 @@
 					<item>Weather.com</item>
 				</items>
 				<default>None</default>
+				<readonly>false</readonly>
+			</property>
+			<property>
+				<name>Auto Rename Driver</name>
+				<type>LIST</type>
+				<items>
+					<item>Off</item>
+					<item>On</item>
+				</items>
+				<default>Off</default>
 				<readonly>false</readonly>
 			</property>
 		</properties>
