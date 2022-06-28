@@ -6,7 +6,6 @@ do
 	OPC = {}
 	PRESETS = {
 		["None"] = {
-			url = "",
 			icon = "default"
 		},
 		["Google"] = {
@@ -49,7 +48,6 @@ end
 function OnDriverLateInit()
 	for k,v in pairs(Properties) do OnPropertyChanged(k) end
 	PersistData = PersistData or {}
-	--if (PersistData.PRESET ~= nil) then C4:UpdateProperty("Presets", PersistData.PRESET) end
 	if (PersistData.URL ~= nil) then C4:UpdateProperty("URL", PersistData.URL) end
 	C4:SetTimer(3000, function(timer) 
 		C4:SendToProxy(5001, "URL_CHANGED", {url = Properties["URL"]})
@@ -127,7 +125,6 @@ function OPC.PRESETS(strProperty)
 	setPresetIcon(strProperty)
 	setPresetURL(strProperty)
 	if (g_AutoRename) then setPresetName(Properties["Presets"]) end
-	--PersistData.PRESET = strProperty
 end
 
 ---------------------------------------------------------------------------------
@@ -205,10 +202,7 @@ end
 --Description   : Function called to set the Icon for the UI button based on Preset Selection.
 ----------------------------------------------------------------------------------------------
 function setPresetIcon(strPreset)
-	if (strPreset ~= "None") then
-		local strIcon = PRESETS[strPreset]["icon"]
-		C4:SendToProxy(5001, "ICON_CHANGED", {icon = strIcon})
-	else
+	if (strPreset ~= nil) then
 		local strIcon = PRESETS[strPreset]["icon"]
 		C4:SendToProxy(5001, "ICON_CHANGED", {icon = strIcon})
 	end
@@ -221,10 +215,6 @@ end
 ---------------------------------------------------------------------------------------------
 function setPresetURL(strPreset)
 	if (strPreset ~= "None") then
-		local newUrl = PRESETS[strPreset]["url"]
-		C4:SendToProxy(5001, "URL_CHANGED", {url = newUrl})
-		C4:UpdateProperty("URL", newUrl)
-	else
 		local newUrl = PRESETS[strPreset]["url"]
 		C4:SendToProxy(5001, "URL_CHANGED", {url = newUrl})
 		C4:UpdateProperty("URL", newUrl)
