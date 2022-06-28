@@ -25,3 +25,4 @@ Optional:
 - Version 5: New Icon for Driver and LUA/XML cleanup
 - Version 6: Debug functions revamped
 - Version 7: Added Auto Rename property and custom URL persist data
+- Version 8: Fix set preset URL code
