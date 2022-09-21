@@ -26,3 +26,6 @@ Optional:
 - Version 6: Debug functions revamped
 - Version 7: Added Auto Rename property and custom URL persist data
 - Version 8: Fix set preset URL code
+
+## Compiled Driver Available from Releases:
+https://github.com/Leighm0/WebView/releases
